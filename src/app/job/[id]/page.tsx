@@ -1,14 +1,16 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useParams } from "next/navigation"; // ✅ Correct import for App Router
+import { useParams } from "next/navigation";
 import { fetchJobById } from "@/services/api";
 import { Job } from "@/types/job";
-import { motion } from "framer-motion";
+import { Loader } from "@/app/components/Loader";
 
+/** Page component for displaying job details */
 export default function JobDetails() {
   const params = useParams();
-  const id = params?.id as string; // Ensure ID is treated as a string
+  const id = params?.id as string | undefined;
+
   const [job, setJob] = useState<Job | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -33,15 +35,7 @@ export default function JobDetails() {
   }, [id]);
 
   if (loading) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <motion.div
-          className="w-16 h-16 border-4 border-purple-900 border-t-transparent rounded-full"
-          animate={{ rotate: 360 }}
-          transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
-        />
-      </div>
-    );
+    return <Loader />;
   }
 
   if (error) {
@@ -61,18 +55,20 @@ export default function JobDetails() {
   }
 
   return (
-    <div className="container mx-auto p-4">
+    <main className="container mx-auto p-4">
       <h1 className="text-2xl font-bold">{job.title}</h1>
       <p>{job.company_name}</p>
-      <div dangerouslySetInnerHTML={{ __html: job.description }} />
+      {/* Render the description as HTML */}
+      <div dangerouslySetInnerHTML={{ __html: job.description }} />{" "}
       <a
         href={job.url}
-        className="text-purple-900"
+        className="text-purple-900 underline focus:outline-none focus:ring-2 focus:ring-purple-700"
         target="_blank"
         rel="noopener noreferrer"
+        aria-label={`Visit ${job.company_name} website`}
       >
         Visit Company Website
       </a>
-    </div>
+    </main>
   );
 }
