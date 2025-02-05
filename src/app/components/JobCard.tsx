@@ -6,7 +6,7 @@ interface JobCardProps {
   job: Job;
 }
 
-/** Card component for displaying a job */
+/** Job Card Component */
 export default function JobCard({ job }: JobCardProps) {
   const router = useRouter();
 
@@ -18,21 +18,21 @@ export default function JobCard({ job }: JobCardProps) {
       <header>
         <img
           src={job.company_logo}
-          alt={`${job.company_name} logo`} // Added alt text for screen readers
+          alt={`${job.company_name} logo`}
           width={64}
           height={64}
           className="mb-2 object-contain"
         />
         <h2 className="text-xl font-bold">{job.title}</h2>
       </header>
-      
+
       <p>{job.company_name}</p>
       <p>{job.candidate_required_location}</p>
       <p>{job.salary}</p>
 
       <button
         title="Apply Now"
-        aria-label={`Apply for ${job.title} at ${job.company_name}`} // Added aria-label for screen readers
+        aria-label={`Apply for ${job.title} at ${job.company_name}`}
         className="mt-auto bg-purple-900 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-purple-700"
         onClick={() => router.push(`/job/${job.id}`)}
       >

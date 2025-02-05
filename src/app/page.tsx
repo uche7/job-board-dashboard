@@ -7,11 +7,14 @@ import Pagination from "./components/Pagination";
 import { fetchJobs } from "../services/api";
 import { Job } from "../types/job";
 import { Loader } from "./components/Loader";
+import { useTheme } from "@mui/material/styles";
+import ThemeToggle from "@/app/components/ThemeToggle";
 
 export default function Home() {
+  const muiTheme = useTheme();
+  const [page, setPage] = useState(1);
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
-  const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const jobsPerPage = 20;
 
@@ -47,23 +50,33 @@ export default function Home() {
   if (loading) return <Loader />;
 
   return (
-    <Suspense fallback={<Loader />}>
-      <div className="container mx-auto p-4">
-        <h1 className="text-2xl text-purple-900 font-bold mb-4">
-          Job Board Dashboard
-        </h1>
-        <SearchBar onSearch={handleSearch} />
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {jobs.map((job) => (
-            <JobCard key={job.id} job={job} />
-          ))}
+    <div
+      style={{
+        backgroundColor: muiTheme.palette.background.default,
+        color: muiTheme.palette.text.primary,
+      }}
+    >
+      <Suspense fallback={<Loader />}>
+        <div className="container mx-auto p-4">
+          <header className="p-4 flex justify-between items-center">
+            <h1 className="text-2xl text-purple-900 font-bold mb-4">
+              Job Board Dashboard
+            </h1>
+            <ThemeToggle />
+          </header>
+          <SearchBar onSearch={handleSearch} />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {jobs.map((job) => (
+              <JobCard key={job.id} job={job} />
+            ))}
+          </div>
+          <Pagination
+            currentPage={page}
+            totalPages={totalPages}
+            onPageChange={setPage}
+          />
         </div>
-        <Pagination
-          currentPage={page}
-          totalPages={totalPages}
-          onPageChange={setPage}
-        />
-      </div>
-    </Suspense>
+      </Suspense>
+    </div>
   );
 }

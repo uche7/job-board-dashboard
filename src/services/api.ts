@@ -1,12 +1,10 @@
-import axios from "axios";
 import { Job } from "../types/job";
 
-const API_URL = "https://remotive.com/api/remote-jobs";
-
+/** Fetch Jobs */
 export const fetchJobs = async (
   filters: { query?: string; location?: string; salaryRange?: string } = {},
   page: number = 1,
-  jobsPerPage: number = 10 // Number of jobs per page
+  jobsPerPage: number = 20
 ): Promise<{ jobs: Job[]; totalJobs: number }> => {
   // Simulate API call or fetch from a real API
   const response = await fetch("https://remotive.com/api/remote-jobs");
@@ -40,7 +38,10 @@ export const fetchJobs = async (
   return { jobs: paginatedJobs, totalJobs: filteredJobs.length };
 };
 
-export const fetchJobById = async (id: string): Promise<Job> => {
-  const response = await axios.get(`${API_URL}?id=${id}`);
-  return response.data;
+// Fetch a job by ID (fetches all jobs and filters locally)
+export const fetchJobById = async (id: string): Promise<Job | null> => {
+  const response = await fetch("https://remotive.com/api/remote-jobs");
+  const data = await response.json();
+  const job = data.jobs.find((job: Job) => job.id === Number(id)); // Find the job with the matching ID
+  return job || null; // Return the job or null if not found
 };
